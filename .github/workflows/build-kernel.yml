@@ -7,9 +7,15 @@ on:
 
 jobs:
   build:
-    name: Build Kernel by ${{ github.actor }}
+    name: Build Kernel ${{ matrix.configfile }} by ${{ github.actor }}
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
+    strategy:
+      fail-fast: false
+      matrix:
+        configfile:
+        - config.env
+        - config-lineageos.env
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -18,7 +24,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Prepare Configuration
       run: |
-        CONFIG_ENV=$(cat config.env | grep -w "CONFIG_ENV" | head -n 1 | cut -d "=" -f 2)
+        CONFIG_ENV=$(cat ${{ matrix.configfile }} | grep -w "CONFIG_ENV" | head -n 1 | cut -d "=" -f 2)
         echo "KERNEL_SOURCE=$(cat $CONFIG_ENV | grep -w "KERNEL_SOURCE" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "KERNEL_SOURCE_BRANCH=$(cat $CONFIG_ENV | grep -w "KERNEL_SOURCE_BRANCH" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "KERNEL_CONFIG=$(cat $CONFIG_ENV | grep -w "KERNEL_CONFIG" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
