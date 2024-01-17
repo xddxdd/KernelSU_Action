@@ -1,5 +1,10 @@
 name: Build Kernel
 on:
+  push:
+    branches:
+      - main
+      - master
+
   watch:
     types: [started]
 
