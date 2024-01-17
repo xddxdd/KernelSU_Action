@@ -20,7 +20,7 @@ jobs:
       matrix:
         configfile:
         - config-oneplus-8t-blu-spark.env
-        - config-oneplus-8t-lineageos.env
+        - config-oneplus-8t-lineageos-20.env
         - config-moto-rtwo-lineageos-21.env
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
