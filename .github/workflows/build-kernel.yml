@@ -19,6 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         configfile:
+        - config-amazon-fire-hd-karnak.env
         - config-oneplus-8t-blu-spark.env
         - config-moto-rtwo-lineageos-21.env
         # # Broken
@@ -60,6 +61,7 @@ jobs:
         echo "ENABLE_KERNELSU=$(cat $CONFIG_ENV | grep -w "ENABLE_KERNELSU" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "KERNELSU_TAG=$(cat $CONFIG_ENV | grep -w "KERNELSU_TAG" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "ADD_KPROBES_CONFIG=$(cat $CONFIG_ENV | grep -w "ADD_KPROBES_CONFIG" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
+        echo "ENABLE_LTO=$(cat $CONFIG_ENV | grep -w "ENABLE_LTO" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "DISABLE-LTO=$(cat $CONFIG_ENV | grep -w "DISABLE-LTO" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "ADD_OVERLAYFS_CONFIG=$(cat $CONFIG_ENV | grep -w "ADD_OVERLAYFS_CONFIG" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
         echo "DISABLE_CC_WERROR=$(cat $CONFIG_ENV | grep -w "DISABLE_CC_WERROR" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
@@ -217,6 +219,12 @@ jobs:
         fi
         if [ ${{ env.ADD_OVERLAYFS_CONFIG }} = true ]; then
             echo "CONFIG_OVERLAY_FS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+        fi
+        if [ ${{ env.ENABLE_LTO }} = true ]; then
+            echo "CONFIG_LTO=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            echo "CONFIG_LTO_CLANG=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            echo "CONFIG_THINLTO=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            echo "CONFIG_LTO_NONE=n" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
         fi
         if [ ${{ env.DISABLE-LTO }} = true ]; then
             sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/' arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
