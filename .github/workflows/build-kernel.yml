@@ -19,9 +19,11 @@ jobs:
       fail-fast: false
       matrix:
         configfile:
+        - config-amazon-fire-hd-douglas.env
         - config-oneplus-8t-blu-spark.env
-        - config-oneplus-8t-lineageos-20.env
         - config-moto-rtwo-lineageos-21.env
+        # # Broken
+        # - config-oneplus-8t-lineageos-20.env
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -224,6 +226,9 @@ jobs:
         fi
         if [ ${{ env.DISABLE_CC_WERROR }} = true ]; then
             echo "CONFIG_CC_WERROR=n" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+        fi
+        if [ ! -f "arch/${{ env.ARCH }}/configs/defconfig" ]; then
+            cp "arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}" "arch/${{ env.ARCH }}/configs/defconfig"
         fi
 
     - name: Setup ccache
