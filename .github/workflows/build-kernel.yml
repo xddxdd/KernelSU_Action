@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         configfile:
-        - config-amazon-fire-hd-douglas.env
         - config-oneplus-8t-blu-spark.env
         - config-moto-rtwo-lineageos-21.env
         # # Broken
+        # - config-amazon-fire-hd-douglas.env
         # - config-oneplus-8t-lineageos-20.env
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
